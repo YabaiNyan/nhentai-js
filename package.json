@@ -1,0 +1,22 @@
+{
+  "name": "nhentai-js",
+  "version": "1.2.1",
+  "description": "nHentai wrapper for Javascript",
+  "main": "nhentai.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "cthuluhoop123",
+  "license": "ISC",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
+    "superagent": "^4.1.0"
+  },
+  "devDependencies": {},
+  "keywords": [
+    "nhentai",
+    "wrapper",
+    "nodejs",
+    "javascript"
+  ]
+}
