@@ -1,6 +1,6 @@
 {
   "name": "nhentai-js",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "nHentai wrapper for Javascript",
   "main": "nhentai.js",
   "scripts": {
@@ -18,5 +18,13 @@
     "wrapper",
     "nodejs",
     "javascript"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cthuluhoop123/nhentai-js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cthuluhoop123/nhentai-js/issues"
+  },
+  "homepage": "https://github.com/cthuluhoop123/nhentai-js#readme"
 }
