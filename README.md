@@ -29,7 +29,9 @@ nhentai.getDoujin('147476')
      'https://i.nhentai.net/galleries/865683/3.png',
      'https://i.nhentai.net/galleries/865683/4.png',
      'https://i.nhentai.net/galleries/865683/5.png',
-     'https://i.nhentai.net/galleries/865683/6.png' ] }
+     'https://i.nhentai.net/galleries/865683/6.png' ]
+  link: 'https://nhentai.net/g/147476/'
+}
 */
 ```
 
