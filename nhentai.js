@@ -20,7 +20,8 @@ class nHentai {
                             ? image[1].attribs['data-src'].replace(/t(\.(jpg|png))/, '$1').replace('t.nhentai', 'i.nhentai')
                             : null
                     }).filter(link => link)
-                    resolve({ title, details, pages: images })
+                    const link = `https://nhentai.net/g/${id}/`
+                    resolve({ title, details, pages: images, link })
                 })
                 .catch(reject)
         })
