@@ -3,8 +3,11 @@ const cheerio = require('cheerio')
 const tagSpacerPatternn = /(\([0-9,]+\))([a-zA-Z])/g
 const tagSplitPattern = /(?<=\))\s(?=[a-zA-Z])/
 
+const urlToId = /(https?:\/\/nhentai\.net\/g\/)(\d+)\/?/
+
 class nHentai {
-    static getDoujin(id) {
+    static getDoujin(nhentai) {
+        const id = nhentai.replace(urlToId, '$2')
         return new Promise((resolve, reject) => {
             request
                 .get('https://nhentai.net/g/' + id + '/')
@@ -27,7 +30,8 @@ class nHentai {
         })
     }
 
-    static exists(id) {
+    static exists(nhentai) {
+        const id = nhentai.replace(urlToId, '$2')
         return new Promise((resolve, reject) => {
             request
                 .head('https://nhentai.net/g/' + id + '/')
