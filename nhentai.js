@@ -4,7 +4,8 @@ const tagSpacerPatternn = /(\([0-9,]+\))([a-zA-Z])/g
 const tagSplitPattern = /(?<=\))\s(?=[a-zA-Z])/
 
 const urlToId = /(https?:\/\/nhentai\.net\/g\/)(\d+)\/?/
-const gToId = /\/g\/(\d+)\/?/
+const gToId = /\/g\/(\d+)\//
+const hrefToPage = /(&||\?)page=(\d+)/
 
 class nHentai {
     static getDoujin(nhentai) {
@@ -50,6 +51,40 @@ class nHentai {
                             details[key]=bookdetails
                         }
                     })
+                    details.lastPage = $('.last')[0].attribs.href.match(hrefToPage)[2]
+                    resolve(details);
+                })
+                .catch(reject)
+            }else{
+                reject()
+            }
+        })
+    }
+
+    static search(query, page, sort = 'date') {
+        return new Promise((resolve, reject) => {
+            if(page >= 1){
+                if(sort.toLowerCase() != "popular" && sort.toLowerCase() != "date"){
+                    reject()
+                }
+                let url = 'https://nhentai.net/search/?q='+query+'&page='+page+'&sort='+sort.toLowerCase()
+                request
+                .get(encodeURI(url))
+                .then(res => {
+                    const $ = cheerio.load(res.text)
+                    let details = {}
+                    let selector = $('.gallery').children('a')
+                    Object.keys(selector).forEach((key)=>{
+                        if(!isNaN(key)){
+                            let bookdetails = {}
+                            let book = selector[key]
+                            bookdetails.bookId = book.attribs.href.replace(gToId, '$1')
+                            bookdetails.thumbnail = findObject(book.children, 'name', 'img').attribs['data-src']
+                            bookdetails.title = findObject(book.children, 'name', 'div').children[0].data
+                            details[key]=bookdetails
+                        }
+                    })
+                    details.lastPage = $('.last')[0].attribs.href.match(hrefToPage)[2]
                     resolve(details);
                 })
                 .catch(reject)
