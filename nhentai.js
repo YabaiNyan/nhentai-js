@@ -4,6 +4,7 @@ const tagSpacerPatternn = /(\([0-9,]+\))([a-zA-Z])/g
 const tagSplitPattern = /(?<=\))\s(?=[a-zA-Z])/
 
 const urlToId = /(https?:\/\/nhentai\.net\/g\/)(\d+)\/?/
+const gToId = /\/g\/(\d+)\/?/
 
 class nHentai {
     static getDoujin(nhentai) {
@@ -30,6 +31,34 @@ class nHentai {
         })
     }
 
+    static getHomepage(page) {
+        return new Promise((resolve, reject) => {
+            if(page >= 1){
+                request
+                .get('https://nhentai.net/?page=' + page)
+                .then(res => {
+                    const $ = cheerio.load(res.text)
+                    let details = {}
+                    let selector = $('.gallery').children('a')
+                    Object.keys(selector).forEach((key)=>{
+                        if(!isNaN(key)){
+                            let bookdetails = {}
+                            let book = selector[key]
+                            bookdetails.bookId = book.attribs.href.replace(gToId, '$1')
+                            bookdetails.thumbnail = findObject(book.children, 'name', 'img').attribs['data-src']
+                            bookdetails.title = findObject(book.children, 'name', 'div').children[0].data
+                            details[key]=bookdetails
+                        }
+                    })
+                    resolve(details);
+                })
+                .catch(reject)
+            }else{
+                reject()
+            }
+        })
+    }
+
     static exists(nhentai) {
         const id = nhentai.replace(urlToId, '$2')
         return new Promise((resolve, reject) => {
@@ -41,6 +70,14 @@ class nHentai {
                 })
         })
     }
+}
+
+function findObject(obj, key, value) {
+    for (var i = 0, len = obj.length; i < len; i++) {
+        if (obj[i][key] === value)
+            return obj[i]; // Return as soon as the object is found
+    }
+    return null; // The object was not found
 }
 
 module.exports = nHentai
