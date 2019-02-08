@@ -64,7 +64,7 @@ class nHentai {
     static search(query, page = 1, sort = 'date') {
         return new Promise((resolve, reject) => {
             if(page >= 1){
-                if(sort.toLowerCase() != "popular" && sort.toLowerCase() != "date"){
+                if((sort.toLowerCase() != "popular" && sort.toLowerCase() != "date") || (query == undefined || query == '')){
                     reject()
                 }
                 let url = 'https://nhentai.net/search/?q='+query+'&page='+page+'&sort='+sort.toLowerCase()
