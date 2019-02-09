@@ -50,8 +50,8 @@ class nHentai {
                     const $ = cheerio.load(res.text)
                     let details = []
                     let selector = $('.gallery').children('a')
-                    Object.keys(selector).map((key) => {
-                        if (!isNaN(key)) {
+                    Object.keys(selector).map(key => {
+                        if (parseInt(key)) {
                             let bookdetails = {}
                             let book = selector[key]
                             let img = findObject(book.children, 'name', 'img')
@@ -105,8 +105,8 @@ class nHentai {
                     const $ = cheerio.load(res.text)
                     let details = []
                     let selector = $('.gallery').children('a')
-                    Object.keys(selector).map((key) => {
-                        if (!isNaN(key)) {
+                    Object.keys(selector).map(key => {
+                        if (parseInt(key)) {
                             let bookdetails = {}
                             let book = selector[key]
                             let img = findObject(book.children, 'name', 'img')
@@ -121,13 +121,11 @@ class nHentai {
                             details.push(bookdetails)
                         }
                     })
-                    let numberOfResults = $('#content')[0].children ? findObject($('#content')[0].children, 'name', 'h2').children[0].data.match(resultsToInt)[1].split(',').join("") : null
-                    if(!isNaN(numberOfResults)){
+                    let numberOfResults = findObject($('#content')[0].children, 'name', 'h2').children[0].data.match(resultsToInt)[1].split(',').join('')
+                    if (parseInt(numberOfResults)) {
                         numberOfResults = parseInt(numberOfResults)
-                    }else if(numberOfResults = "No"){
+                    } else {
                         numberOfResults = 0
-                    }else{
-                        numberOfResults = null
                     }
                     resolve({
                         results: details,
