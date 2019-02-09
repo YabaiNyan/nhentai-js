@@ -59,7 +59,7 @@ class nHentai {
                     })
                     resolve({
                         results: details,
-                        lastPage: $('.last')[0].attribs.href.match(hrefToPage)[2]
+                        lastPage: $('.last')[0] ? $('.last')[0].attribs.href.match(hrefToPage)[2] : page
                     })
                 })
                 .catch(reject)
@@ -108,7 +108,7 @@ class nHentai {
                     })
                     resolve({
                         results: details,
-                        lastPage: $('.last')[0].attribs.href.match(hrefToPage)[2]
+                        lastPage: $('.last')[0] ? $('.last')[0].attribs.href.match(hrefToPage)[2] : page
                     })
                 })
                 .catch(reject)
