@@ -8,7 +8,6 @@ const gToId = /\/g\/(\d+)\//
 const hrefToPage = /(&||\?)page=(\d+)/
 const doubleSlashToHttps = /(https:)?(\/\/)/
 const styleToAspectRatio = /padding:0 0 (.*)% 0/
-const resultsToInt = /(.*) Results/
 
 const sorts = ['popular', 'date']
 
