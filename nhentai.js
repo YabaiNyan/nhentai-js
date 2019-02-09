@@ -122,8 +122,7 @@ class nHentai {
                     })
                     resolve({
                         results: details,
-                        lastPage: $('.last')[0] ? $('.last')[0].attribs.href.match(hrefToPage)[2] : page,
-                        totalSearchResults: $('#content')[0] ? parseInt(findObject($('#content')[0].children, 'name', 'h2').children[0].data.match(resultsToInt)[1].split(',').join("")) : null
+                        lastPage: $('.last')[0] ? $('.last')[0].attribs.href.match(hrefToPage)[2] : page
                     })
                 })
                 .catch(reject)
