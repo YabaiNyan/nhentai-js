@@ -4,6 +4,10 @@ const tagSpacerPatternn = /(\([0-9,]+\))([a-zA-Z])/g
 const tagSplitPattern = /(?<=\))\s(?=[a-zA-Z])/
 
 const urlToId = /(https?:\/\/nhentai\.net\/g\/)(\d+)\/?/
+const gToId = /\/g\/(\d+)\//
+const hrefToPage = /(&||\?)page=(\d+)/
+
+const sorts = ['popular', 'date']
 
 class nHentai {
     static getDoujin(nhentai) {
@@ -30,6 +34,87 @@ class nHentai {
         })
     }
 
+    static getHomepage(page = 1) {
+        return new Promise((resolve, reject) => {
+            if (page <= 0) {
+                reject(new Error('Page must be greater than or equal to 1'))
+                return
+            }
+
+            request
+                .get('https://nhentai.net/?page=' + page)
+                .then(res => {
+                    const $ = cheerio.load(res.text)
+                    let details = []
+                    let selector = $('.gallery').children('a')
+                    Object.keys(selector).map((key) => {
+                        if (!isNaN(key)) {
+                            let bookdetails = {}
+                            let book = selector[key]
+                            bookdetails.bookId = book.attribs.href.replace(gToId, '$1')
+                            bookdetails.thumbnail = findObject(book.children, 'name', 'img').attribs['data-src']
+                            bookdetails.title = findObject(book.children, 'name', 'div').children[0].data
+                            details.push(bookdetails)
+                        }
+                    })
+                    resolve({
+                        results: details,
+                        lastPage: $('.last')[0].attribs.href.match(hrefToPage)[2]
+                    })
+                })
+                .catch(reject)
+        })
+    }
+
+    static search(query, page = 1, sort = 'date') {
+        return new Promise((resolve, reject) => {
+
+            if (!query) {
+                reject(new Error('Query cannot be empty'))
+                return
+            }
+
+            if (page <= 0) {
+                reject(new Error('Page must be greater than or equal to 1'))
+                return
+            }
+
+            const sortMethod = sort.toLowerCase()
+
+            if (!sorts.includes(sortMethod)) {
+                reject(new Error('Invalid sorting'))
+            }
+
+            request
+                .get('https://nhentai.net/search/')
+                .query({
+                    q: query,
+                    page,
+                    sort: sort.toLowerCase()
+                })
+                .then(res => {
+                    const $ = cheerio.load(res.text)
+                    let details = []
+                    let selector = $('.gallery').children('a')
+                    Object.keys(selector).map((key) => {
+                        if (!isNaN(key)) {
+                            let bookdetails = {}
+                            let book = selector[key]
+                            bookdetails.bookId = book.attribs.href.replace(gToId, '$1')
+                            bookdetails.thumbnail = findObject(book.children, 'name', 'img').attribs['data-src']
+                            bookdetails.title = findObject(book.children, 'name', 'div').children[0].data
+                            details.push(bookdetails)
+                        }
+                    })
+                    resolve({
+                        results: details,
+                        lastPage: $('.last')[0].attribs.href.match(hrefToPage)[2]
+                    })
+                })
+                .catch(reject)
+        })
+    }
+
     static exists(nhentai) {
         const id = nhentai.replace(urlToId, '$2')
         return new Promise((resolve, reject) => {
@@ -41,6 +126,10 @@ class nHentai {
                 })
         })
     }
+}
+
+function findObject(obj, key, value) {
+    return Object.entries(obj).filter(object => object[1][key] === value)[0][1]
 }
 
 module.exports = nHentai
