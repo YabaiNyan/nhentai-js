@@ -8,7 +8,7 @@ const gToId = /\/g\/(\d+)\//
 const hrefToPage = /(&||\?)page=(\d+)/
 const doubleSlashToHttps = /(https:)?(\/\/)/
 const styleToAspectRatio = /padding:0 0 (.*)% 0/
-const resultsToInt = /(.*) Results/i
+const resultsToInt = /(.*) Results/
 
 const sorts = ['popular', 'date']
 
@@ -121,18 +121,10 @@ class nHentai {
                             details.push(bookdetails)
                         }
                     })
-                    let numberOfResults = $('#content')[0].children ? findObject($('#content')[0].children, 'name', 'h2').children[0].data.match(resultsToInt)[1].split(',').join("") : null
-                    if(!isNaN(numberOfResults)){
-                        numberOfResults = parseInt(numberOfResults)
-                    }else if(numberOfResults = "No"){
-                        numberOfResults = 0
-                    }else{
-                        numberOfResults = null
-                    }
                     resolve({
                         results: details,
                         lastPage: $('.last')[0] ? $('.last')[0].attribs.href.match(hrefToPage)[2] : page,
-                        totalSearchResults: numberOfResults
+                        totalSearchResults: $('#content')[0] ? parseInt(findObject($('#content')[0].children, 'name', 'h2').children[0].data.match(resultsToInt)[1].split(',').join("")) : null
                     })
                 })
                 .catch(reject)
