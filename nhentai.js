@@ -56,9 +56,9 @@ class nHentai {
                             let img = findObject(book.children, 'name', 'img')
                             bookdetails.bookId = book.attribs.href.replace(gToId, '$1')
                             bookdetails.thumbnailAspectRatio = book.attribs.style.replace(styleToAspectRatio, '$1')
-                            if("is" in img.attribs){
+                            if ('is' in img.attribs) {
                                 bookdetails.thumbnail = img.attribs['data-src']
-                            }else{
+                            } else {
                                 bookdetails.thumbnail = img.attribs['src'].replace(doubleSlashToHttps, 'https://')
                             }
                             bookdetails.title = findObject(book.children, 'name', 'div').children[0].data
@@ -111,9 +111,9 @@ class nHentai {
                             let img = findObject(book.children, 'name', 'img')
                             bookdetails.bookId = book.attribs.href.replace(gToId, '$1')
                             bookdetails.thumbnailAspectRatio = book.attribs.style.replace(styleToAspectRatio, '$1')
-                            if("is" in img.attribs){
+                            if (is in img.attribs) {
                                 bookdetails.thumbnail = img.attribs['data-src']
-                            }else{
+                            } else {
                                 bookdetails.thumbnail = img.attribs['src'].replace(doubleSlashToHttps, 'https://')
                             }
                             bookdetails.title = findObject(book.children, 'name', 'div').children[0].data
