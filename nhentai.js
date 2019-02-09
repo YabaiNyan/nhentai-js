@@ -129,7 +129,7 @@ class nHentai {
 }
 
 function findObject(obj, key, value) {
-    return Object.entries(obj).filter(object => object[1][key] === value)[0][1]
+    return Object.entries(obj).filter(object => object[1][key] === value)[0][1] || null
 }
 
 module.exports = nHentai
