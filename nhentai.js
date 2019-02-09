@@ -129,7 +129,9 @@ class nHentai {
 }
 
 function findObject(obj, key, value) {
-    return Object.entries(obj).filter(object => object[1][key] === value)[0][1] || null
+    const found = Object.entries(obj).filter(object => object[1][key] === value)[0]
+    if (found) { return found[1] }
+    return null
 }
 
 module.exports = nHentai
