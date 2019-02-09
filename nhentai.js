@@ -7,6 +7,8 @@ const urlToId = /(https?:\/\/nhentai\.net\/g\/)(\d+)\/?/
 const gToId = /\/g\/(\d+)\//
 const hrefToPage = /(&||\?)page=(\d+)/
 
+const sorts = ['popular', 'date']
+
 class nHentai {
     static getDoujin(nhentai) {
         const id = nhentai.replace(urlToId, '$2')
@@ -34,63 +36,82 @@ class nHentai {
 
     static getHomepage(page = 1) {
         return new Promise((resolve, reject) => {
-            if(page >= 1){
-                request
+            if (page <= 0) {
+                reject(new Error('Page must be greater than or equal to 1'))
+                return
+            }
+
+            request
                 .get('https://nhentai.net/?page=' + page)
                 .then(res => {
                     const $ = cheerio.load(res.text)
-                    let details = {}
+                    let details = []
                     let selector = $('.gallery').children('a')
-                    Object.keys(selector).forEach((key)=>{
-                        if(!isNaN(key)){
+                    Object.keys(selector).map((key) => {
+                        if (!isNaN(key)) {
                             let bookdetails = {}
                             let book = selector[key]
                             bookdetails.bookId = book.attribs.href.replace(gToId, '$1')
                             bookdetails.thumbnail = findObject(book.children, 'name', 'img').attribs['data-src']
                             bookdetails.title = findObject(book.children, 'name', 'div').children[0].data
-                            details[key]=bookdetails
+                            details.push(bookdetails)
                         }
                     })
-                    details.lastPage = $('.last')[0].attribs.href.match(hrefToPage)[2]
-                    resolve(details);
+                    resolve({
+                        results: details,
+                        lastPage: $('.last')[0] ? $('.last')[0].attribs.href.match(hrefToPage)[2] : page
+                    })
                 })
                 .catch(reject)
-            }else{
-                reject()
-            }
         })
     }
 
     static search(query, page = 1, sort = 'date') {
         return new Promise((resolve, reject) => {
-            if(page >= 1){
-                if((sort.toLowerCase() != "popular" && sort.toLowerCase() != "date") || (query == undefined || query == '')){
-                    reject()
-                }
-                let url = 'https://nhentai.net/search/?q='+query+'&page='+page+'&sort='+sort.toLowerCase()
-                request
-                .get(encodeURI(url))
+
+            if (!query) {
+                reject(new Error('Query cannot be empty'))
+                return
+            }
+
+            if (page <= 0) {
+                reject(new Error('Page must be greater than or equal to 1'))
+                return
+            }
+
+            const sortMethod = sort.toLowerCase()
+
+            if (!sorts.includes(sortMethod)) {
+                reject(new Error('Invalid sorting'))
+            }
+
+            request
+                .get('https://nhentai.net/search/')
+                .query({
+                    q: query,
+                    page,
+                    sort: sort.toLowerCase()
+                })
                 .then(res => {
                     const $ = cheerio.load(res.text)
-                    let details = {}
+                    let details = []
                     let selector = $('.gallery').children('a')
-                    Object.keys(selector).forEach((key)=>{
-                        if(!isNaN(key)){
+                    Object.keys(selector).map((key) => {
+                        if (!isNaN(key)) {
                             let bookdetails = {}
                             let book = selector[key]
                             bookdetails.bookId = book.attribs.href.replace(gToId, '$1')
                             bookdetails.thumbnail = findObject(book.children, 'name', 'img').attribs['data-src']
                             bookdetails.title = findObject(book.children, 'name', 'div').children[0].data
-                            details[key]=bookdetails
+                            details.push(bookdetails)
                         }
                     })
-                    details.lastPage = $('.last')[0].attribs.href.match(hrefToPage)[2]
-                    resolve(details);
+                    resolve({
+                        results: details,
+                        lastPage: $('.last')[0] ? $('.last')[0].attribs.href.match(hrefToPage)[2] : page
+                    })
                 })
                 .catch(reject)
-            }else{
-                reject()
-            }
         })
     }
 
@@ -108,11 +129,9 @@ class nHentai {
 }
 
 function findObject(obj, key, value) {
-    for (var i = 0, len = obj.length; i < len; i++) {
-        if (obj[i][key] === value)
-            return obj[i]; // Return as soon as the object is found
-    }
-    return null; // The object was not found
+    const found = Object.entries(obj).filter(object => object[1][key] === value)[0]
+    if (found) { return found[1] }
+    return null
 }
 
 module.exports = nHentai
