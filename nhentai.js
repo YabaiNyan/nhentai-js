@@ -6,6 +6,8 @@ const tagSplitPattern = /(?<=\))\s(?=[a-zA-Z])/
 const urlToId = /(https?:\/\/nhentai\.net\/g\/)(\d+)\/?/
 const gToId = /\/g\/(\d+)\//
 const hrefToPage = /(&||\?)page=(\d+)/
+const doubleSlashToHttps = /(https:)?(\/\/)/
+const styleToAspectRatio = /padding:0 0 (.*)% 0/
 
 const sorts = ['popular', 'date']
 
@@ -51,8 +53,14 @@ class nHentai {
                         if (!isNaN(key)) {
                             let bookdetails = {}
                             let book = selector[key]
+                            let img = findObject(book.children, 'name', 'img')
                             bookdetails.bookId = book.attribs.href.replace(gToId, '$1')
-                            bookdetails.thumbnail = findObject(book.children, 'name', 'img').attribs['data-src']
+                            bookdetails.thumbnailAspectRatio = book.attribs.style.replace(styleToAspectRatio, '$1')
+                            if("is" in img.attribs){
+                                bookdetails.thumbnail = img.attribs['data-src']
+                            }else{
+                                bookdetails.thumbnail = img.attribs['src'].replace(doubleSlashToHttps, 'https://')
+                            }
                             bookdetails.title = findObject(book.children, 'name', 'div').children[0].data
                             details.push(bookdetails)
                         }
@@ -100,8 +108,14 @@ class nHentai {
                         if (!isNaN(key)) {
                             let bookdetails = {}
                             let book = selector[key]
+                            let img = findObject(book.children, 'name', 'img')
                             bookdetails.bookId = book.attribs.href.replace(gToId, '$1')
-                            bookdetails.thumbnail = findObject(book.children, 'name', 'img').attribs['data-src']
+                            bookdetails.thumbnailAspectRatio = book.attribs.style.replace(styleToAspectRatio, '$1')
+                            if("is" in img.attribs){
+                                bookdetails.thumbnail = img.attribs['data-src']
+                            }else{
+                                bookdetails.thumbnail = img.attribs['src'].replace(doubleSlashToHttps, 'https://')
+                            }
                             bookdetails.title = findObject(book.children, 'name', 'div').children[0].data
                             details.push(bookdetails)
                         }
