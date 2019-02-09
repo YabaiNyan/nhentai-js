@@ -4,7 +4,7 @@
   "description": "nHentai wrapper for Javascript",
   "main": "nhentai.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "author": "cthuluhoop123",
   "license": "ISC",
@@ -12,7 +12,10 @@
     "cheerio": "^1.0.0-rc.2",
     "superagent": "^4.1.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0"
+  },
   "keywords": [
     "nhentai",
     "wrapper",
