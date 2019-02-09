@@ -7,6 +7,7 @@ const urlToId = /(https?:\/\/nhentai\.net\/g\/)(\d+)\/?/
 const gToId = /\/g\/(\d+)\//
 const hrefToPage = /(&||\?)page=(\d+)/
 const doubleSlashToHttps = /(https:)?(\/\/)/
+const styleToAspectRatio = /padding:0 0 (.*)% 0/
 
 const sorts = ['popular', 'date']
 
@@ -54,7 +55,7 @@ class nHentai {
                             let book = selector[key]
                             let img = findObject(book.children, 'name', 'img')
                             bookdetails.bookId = book.attribs.href.replace(gToId, '$1')
-                            bookdetails.aTagStyle = book.attribs.style
+                            bookdetails.thumbnailAspectRatio = book.attribs.style.replace(styleToAspectRatio, '$1')
                             if("is" in img.attribs){
                                 bookdetails.thumbnail = img.attribs['data-src']
                             }else{
@@ -109,7 +110,7 @@ class nHentai {
                             let book = selector[key]
                             let img = findObject(book.children, 'name', 'img')
                             bookdetails.bookId = book.attribs.href.replace(gToId, '$1')
-                            bookdetails.aTagStyle = book.attribs.style
+                            bookdetails.thumbnailAspectRatio = book.attribs.style.replace(styleToAspectRatio, '$1')
                             if("is" in img.attribs){
                                 bookdetails.thumbnail = img.attribs['data-src']
                             }else{
