@@ -25,13 +25,19 @@ class nHentai {
                         if (tag.endsWith(':') && !tags[i + 1].endsWith(':')) { details[tag.substring(0, tag.length - 1).toLowerCase()] = tags[i + 1].replace(tagSpacerPatternn, '$1 $2').split(tagSplitPattern) }
                     })
                     const title = $('#info').find('h1').text()
+                    const nativeTitle = $('#info').find('h2').text()
+                    const thumbnails = Object.entries($('.gallerythumb').find('img')).map(image => {
+                        return image[1].attribs
+                            ? image[1].attribs['data-src']
+                            : null
+                    }).filter(link => link)
                     const images = Object.entries($('.gallerythumb').find('img')).map(image => {
                         return image[1].attribs
                             ? image[1].attribs['data-src'].replace(/t(\.(jpg|png))/, '$1').replace('t.nhentai', 'i.nhentai')
                             : null
                     }).filter(link => link)
                     const link = `https://nhentai.net/g/${id}/`
-                    resolve({ title, details, pages: images, link })
+                    resolve({ title, nativeTitle, details, pages: images, thumbnails, link })
                 })
                 .catch(reject)
         })
@@ -121,6 +127,7 @@ class nHentai {
                             details.push(bookdetails)
                         }
                     })
+
                     let numberOfResults = findObject($('#content')[0].children, 'name', 'h2').children[0].data.match(resultsToInt)[1].split(',').join('')
                     if (parseInt(numberOfResults)) {
                         numberOfResults = parseInt(numberOfResults)
