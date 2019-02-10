@@ -9,6 +9,8 @@ describe('nHentai Methods', () => {
         doujin.should.have.property('details')
         doujin.should.have.property('pages')
         doujin.should.have.property('link')
+        doujin.should.have.property('nativeTitle')
+        doujin.should.have.property('thumbnails')
     })
 
     it ('getHomepage()', async() => {
