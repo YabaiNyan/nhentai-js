@@ -3,7 +3,7 @@ const cheerio = require('cheerio')
 const tagSpacerPatternn = /(\([0-9,]+\))([a-zA-Z])/g
 const tagSplitPattern = /(?<=\))\s(?=[a-zA-Z])/
 
-const urlToId = /(https?:\/\/nhentai\.net\/g\/)(\d+)\/?/
+const urlToId = /(https?:\/\/nhentai\.net\/g\/)(\d+)\/?.*/
 const gToId = /\/g\/(\d+)\//
 const hrefToPage = /(&||\?)page=(\d+)/
 const doubleSlashToHttps = /(https:)?(\/\/)/
