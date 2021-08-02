@@ -3,18 +3,16 @@ const cheerio = require('cheerio')
 const tagSpacerPatternn = /(\([0-9,]+\))([a-zA-Z])/g
 const tagSplitPattern = /(?<=\))\s(?=[a-zA-Z])/
 
-const urlToId = /(https?:\/\/nhentai\.net\/g\/)(\d+)\/?/
+const urlToId = /(https?:\/\/nhentai\.net\/g\/)(\d+)\/?.*/
 const gToId = /\/g\/(\d+)\//
 const hrefToPage = /(&||\?)page=(\d+)/
 const doubleSlashToHttps = /(https:)?(\/\/)/
 const styleToAspectRatio = /padding:0 0 (.*)% 0/
 const resultsToInt = /(.*) Results/i
 
-const sorts = ['popular', 'date']
-
 class nHentai {
-    static getDoujin(nhentai) {
-        const id = nhentai.replace(urlToId, '$2')
+    static getDoujin(identifier) {
+        const id = identifier.replace(urlToId, '$2')
         return new Promise((resolve, reject) => {
             request
                 .get('https://nhentai.net/g/' + id + '/')
@@ -96,7 +94,7 @@ class nHentai {
 
             const sortMethod = sort.toLowerCase()
 
-            if (!sorts.includes(sortMethod)) {
+            if (!['popular', 'date'].includes(sortMethod)) {
                 reject(new Error('Invalid sorting'))
             }
 
@@ -144,8 +142,8 @@ class nHentai {
         })
     }
 
-    static exists(nhentai) {
-        const id = nhentai.replace(urlToId, '$2')
+    static exists(identifier) {
+        const id = identifier.replace(urlToId, '$2')
         return new Promise((resolve, reject) => {
             request
                 .head('https://nhentai.net/g/' + id + '/')
@@ -159,8 +157,8 @@ class nHentai {
 
 function findObject(obj, key, value) {
     const found = Object.entries(obj).filter(object => object[1][key] === value)[0]
-    if (found) { return found[1] }
-    return null
+    if (!found) return null
+    return found[1]
 }
 
 module.exports = nHentai

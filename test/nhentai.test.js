@@ -4,11 +4,13 @@ const nhentai = require('../nhentai.js')
 
 describe('nHentai Methods', () => {
     it('getDoujin()', async () => {
-        const doujin = await nhentai.getDoujin('228626')
+        const doujin = await nhentai.getDoujin('https://nhentai.net/g/228626/2')
         doujin.should.have.property('title')
         doujin.should.have.property('details')
         doujin.should.have.property('pages')
         doujin.should.have.property('link')
+        doujin.should.have.property('nativeTitle')
+        doujin.should.have.property('thumbnails')
     })
 
     it ('getHomepage()', async() => {
@@ -16,7 +18,6 @@ describe('nHentai Methods', () => {
         homepage.should.have.property('results')
         homepage.results.should.be.instanceof(Array)
         homepage.should.have.property('lastPage')
-        homepage.lastPage.should
     })
 
     it('search()', async () => {
